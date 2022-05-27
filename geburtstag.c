@@ -145,7 +145,7 @@ int main(int argc, char const *argv[]) {
         exit(EXIT_FAILURE);
     } else {
         if(atoi(argv[1]) < 1) {
-            fprintf(stderr, "Programmargument muss mindestens 1 betragen.");
+            fprintf(stderr, "Anzahl der zu generierenden Geburtstage muss mindestens 1 betragen.");
             exit(EXIT_FAILURE);
         } else {
             laenge = atoi(argv[1]);
