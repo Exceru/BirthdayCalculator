@@ -77,7 +77,7 @@ Geburtstag *zufaelligerGeburtstag(unsigned int laenge) {
         eintrag.jahr = meinRand(1900, 2100);
         eintrag.monat = meinRand(1,12);
 
-        int ende = 0;
+        int ende;
 
         switch (eintrag.monat) {
             case 1:
@@ -110,13 +110,13 @@ void printGeburtstag(Geburtstag const *const daten, unsigned int laenge, int ref
     for(int i = 0; i < laenge; i++) {
         if(refJahr > daten[i].jahr) {
             int tage = alterInTagen(&daten[i], refJahr);
-            printf("Geboren am %d.%d.%d; Alter in Tagen bis zum Jahr %d: %d.\n",
+            printf("Geboren am %02d.%02d.%d; Alter in Tagen bis zum Jahr %d: %d.\n",
                    daten[i].tag, daten[i].monat, daten[i].jahr, refJahr, tage);
 
         } else {
             int tage = -1 * alterInTagen(&daten[i], refJahr);
 
-            printf("Oh nooo, es ist das Jahr %d und ich werde erst in %d Tagen am %d.%d.%d geboren.\n",
+            printf("Oh nooo, es ist das Jahr %d und ich werde erst in %d Tagen am %02d.%02d.%d geboren.\n",
                    refJahr, tage, daten[i].tag, daten[i].monat, daten[i].jahr);
         }
     }
@@ -136,24 +136,41 @@ int vergleichGeburtstage(const void *geb1, const void *geb2) {
 }
 
 int main(int argc, char const *argv[]) {
-    Geburtstag i;
-    i.jahr = 1917;
-    i.monat = 2;
-    i.tag = 20;
 
-    printf("%d\n", alterInTagen(&i, 1917));
-    printf("%d\n", meinRand(1,2));
+    int laenge;
 
-    Geburtstag * test = zufaelligerGeburtstag(3);
+    // Programmargumente prüfen
+    if(argc != 2) {
+        fprintf(stderr, "Fehlerhafte Programmargumente.");
+        exit(EXIT_FAILURE);
+    } else {
+        if(atoi(argv[1]) < 1) {
+            fprintf(stderr, "Programmargument muss mindestens 1 betragen.");
+            exit(EXIT_FAILURE);
+        } else {
+            laenge = atoi(argv[1]);
+        }
+    }
 
-    printGeburtstag(test, 3, 2000);
+    // Referenzjahr über scanf() einlesen
+    int ref;
+
+    printf("Referenzjahr: \n");
+    if(scanf("%d", &ref) != 1)  {
+        fprintf(stderr, "Fehler bei der Eingabe.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    Geburtstag * geburtstage = zufaelligerGeburtstag(laenge);
+
+    printGeburtstag(geburtstage, laenge, ref);
+
+    printf("Die Geburtstage werden sortiert.....\n");
+    qsort(geburtstage, laenge, sizeof(Geburtstag), vergleichGeburtstage);
+
+    printGeburtstag(geburtstage, laenge, ref);
 
 
-
-    printf("%d\n", argc);
-
-    int g = atoi(argv[1]);
-    printf("%d", g);
 
     return 0;
 }
